@@ -302,6 +302,8 @@ class PythonLSPServer(MethodDispatcher):
             },
             "experimental": merge(self._hook("pylsp_experimental_capabilities")),
         }
+        hook_capabilities = merge(self._hook("pylsp_capabilities"))
+        server_capabilities = _utils.merge_dicts(server_capabilities, hook_capabilities)
         log.info("Server capabilities: %s", server_capabilities)
         return server_capabilities
 
@@ -417,6 +419,10 @@ class PythonLSPServer(MethodDispatcher):
 
     def document_symbols(self, doc_uri):
         return flatten(self._hook("pylsp_document_symbols", doc_uri))
+
+    def semantic_tokens(self, doc_uri):
+        res = self._hook("pylsp_semantic_tokens", doc_uri)
+        return res or None
 
     def document_did_save(self, doc_uri):
         return self._hook("pylsp_document_did_save", doc_uri)
@@ -742,6 +748,9 @@ class PythonLSPServer(MethodDispatcher):
 
     def m_text_document__document_symbol(self, textDocument=None, **_kwargs):
         return self.document_symbols(textDocument["uri"])
+
+    def m_text_document__semantic_tokens__full(self, textDocument=None, **_kwargs):
+        return self.semantic_tokens(textDocument["uri"])[0]
 
     def m_text_document__formatting(self, textDocument=None, options=None, **_kwargs):
         return self.format_document(textDocument["uri"], options)

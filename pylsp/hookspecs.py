@@ -64,6 +64,11 @@ def pylsp_document_symbols(config, workspace, document):
     pass
 
 
+@hookspec
+def pylsp_semantic_tokens(config, workspace, document):
+    pass
+
+
 @hookspec(firstresult=True)
 def pylsp_execute_command(config, workspace, command, arguments):
     pass
@@ -71,6 +76,11 @@ def pylsp_execute_command(config, workspace, command, arguments):
 
 @hookspec
 def pylsp_experimental_capabilities(config, workspace):
+    pass
+
+
+@hookspec
+def pylsp_capabilities(config):
     pass
 
 
